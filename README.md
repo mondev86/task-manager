@@ -1,59 +1,242 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Task Manager
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplicación de gestión de tareas desarrollada con Laravel 12, Vue 3, MySQL y mas.
 
-## About Laravel
+## Desc Manager es una aplicación web para gestionar tareasripción
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Task diarias con las siguientes funcionalidades:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Gestión de tareas**: Crear, editar, completar y eliminar tareas
+- **Estados**: Cada tarea puede estar Pendiente, En proceso o Completada
+- **Prioridades**: Alta (rojo), Media (naranja), Baja (gris) para organizar visualmente
+- **Fechas**: Programar tareas con fecha y hora de inicio
+- **Recordatorios**: Enviar recordatorios por WhatsApp o email
+- **Diseño moderno**: Interfaz visual con franjas de color según prioridad/estado
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Ideal para uso personal o pequeño equipo.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Características
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- ✅ **Autenticación** - Registro e inicio de sesión con Laravel Sanctum
+- ✅ **CRUD de tareas** - Crear, leer, actualizar y eliminar tareas
+- ✅ **Estados** - Pendiente, En proceso, Completada
+- ✅ **Prioridades** - Alta (rojo), Media (naranja), Baja (gris)
+- ✅ **Diseño visual** - Franja de color según prioridad/tarea completada
+- ✅ **Filtros** - Filtrar por estado, fecha y paginación
+- ✅ **Recordatorios WhatsApp** - Enviar recordatorios via WhatsApp Web
+- ✅ **Email** - Enviar recordatorios por correo (mailto)
+- ✅ **Seguridad** - Rate limiting, sesiones cifradas, debug off
 
-## Laravel Sponsors
+## Requisitos
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Local (XAMPP)
+- PHP 8.2+
+- Composer
+- Node.js 18+
+- MySQL 8.0+
+- XAMPP
 
-### Premium Partners
+### Docker
+- Docker + Docker Compose
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## Instalación Local
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+# Clonar el proyecto
+git clone <repo-url>
+cd task-manager
 
-## Code of Conduct
+# Instalar dependencias PHP
+composer install
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Instalar dependencias Node
+npm install
 
-## Security Vulnerabilities
+# Copiar archivo de entorno
+cp .env.example .env
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Generar clave de aplicación
+php artisan key:generate
 
-## License
+# Ejecutar migraciones
+php artisan migrate
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Compilar assets
+npm run build
+
+# Iniciar servidor
+php artisan serve
+```
+
+## Configuración .env (Local)
+
+```env
+APP_NAME=TaskManager
+APP_ENV=local
+APP_DEBUG=false
+APP_URL=http://127.0.0.1:8000
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=taskmanagerdb
+DB_USERNAME=root
+DB_PASSWORD=tu_password
+
+SESSION_ENCRYPT=true
+SESSION_DRIVER=database
+```
+
+---
+
+## Docker (WSL/Linux)
+
+### Archivos配置
+- `Dockerfile` - Imagen PHP 8.2-FPM
+- `docker-compose.yml` - Servicios app + MySQL
+- `Makefile` - Comandos rápidos
+
+### Comandos
+
+```bash
+# Construir y ejecutar
+make build
+make up
+
+# Ver logs en tiempo real
+make logs
+
+# Entrar al contenedor
+make sh
+
+# Ejecutar migraciones
+make migrate
+
+# Reiniciar base de datos
+make fresh
+```
+
+### Configuración .env (Docker)
+
+```env
+APP_NAME=TaskManager
+APP_ENV=local
+APP_DEBUG=false
+APP_URL=http://localhost:8000
+
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=taskmanagerdb
+DB_USERNAME=root
+DB_PASSWORD=root
+
+SESSION_ENCRYPT=true
+SESSION_DRIVER=database
+```
+
+### Puertos
+
+| Servicio | Puerto |
+|----------|--------|
+| App | 8000 |
+| MySQL | 3306 |
+
+---
+
+## Uso
+
+1. Acceder a `http://127.0.0.1:8000`
+2. Registrarse / Iniciar sesión
+3. Crear tareas con título, descripción, estado, prioridad, fecha y WhatsApp
+4. Editar o eliminar tareas desde los iconos
+5. Enviar recordatorios por WhatsApp o email
+
+---
+
+## API Endpoints
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/api/register` | Registrar usuario |
+| POST | `/api/login` | Iniciar sesión |
+| POST | `/api/logout` | Cerrar sesión |
+| GET | `/api/tasks` | Listar tareas (con filtros) |
+| POST | `/api/tasks` | Crear tarea |
+| PUT | `/api/tasks/{id}` | Actualizar tarea |
+| DELETE | `/api/tasks/{id}` | Eliminar tarea |
+| POST | `/api/tasks/{id}/whatsapp` | Enviar recordatorio WhatsApp |
+| POST | `/api/tasks/{id}/email` | Enviar recordatorio email |
+
+### Filtros GET `/api/tasks`
+
+- `?status=pending|in_progress|completed` - Filtrar por estado
+- `?start_date=2026-01-01` - Filtrar desde fecha
+- `?end_date=2026-12-31` - Filtrar hasta fecha
+- `?per_page=20` - Tareas por página (máx 100)
+
+---
+
+## Errores Comunes
+
+### Error: "SQLSTATE[42S22]: Column not found"
+- **Causa**: La columna `status` o `priority` no existe en la base de datos
+- **Solución**: Ejecutar migraciones
+  ```bash
+  php artisan migrate
+  ```
+
+### Error: "Route not found" o 404
+- **Causa**: Rutas no regeneradas
+- **Solución**: 
+  ```bash
+  php artisan route:clear
+  php artisan cache:clear
+  ```
+
+### Error: "Target class [XXX] does not exist"
+- **Causa**: Cache de Laravel obsoleto
+- **Solución**:
+  ```bash
+  php artisan config:clear
+  php artisan cache:clear
+  ```
+
+### Error: "Pusher client not found"
+- **Causa**: Echo/Pusher no configurado (solo si usas tiempo real)
+- **Solución**: No afecta el funcionamiento, eliminar configuración de websockets si no se usa
+
+### Error: "Connection refused" en Docker
+- **Causa**: MySQL no está iniciado o credenciales incorrectas
+- **Solución**: Verificar `docker-compose up -d` y credenciales en `.env`
+
+### Error: "Vite manifest not found"
+- **Causa**: Assets no compilados
+- **Solución**:
+  ```bash
+  npm run build
+  ```
+
+### Error: "Session encrypted"
+- **Causa**: Intento de acceder a sesión sin HTTPS en producción
+- **Solución**: Configurar correctamente `SESSION_ENCRYPT` y `SANCTUM_STATEFUL_DOMAINS`
+
+---
+
+## Tecnologías
+
+- **Backend**: Laravel 12, PHP 8.2
+- **Frontend**: Vue 3, Tailwind CSS 4, Vite
+- **Base de datos**: MySQL 8.0
+- **Autenticación**: Laravel Sanctum
+- **Email**: Mailtrap (desarrollo)
+
+---
+
+## Licencia
+
+MIT License

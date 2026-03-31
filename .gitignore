@@ -23,3 +23,11 @@ storage/*.log
 .idea
 .vscode
 .phpunit.result.cache
+
+# Artefactos locales de Windows mal generados
+/C*
+/public/C*
+
+# Bases de datos locales
+/taskmanagerdb/
+/tasksmanagerdb/

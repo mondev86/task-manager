@@ -1,18 +1,21 @@
 import './bootstrap';
 import { createApp } from 'vue';
-import TaskManager from './components/TaskManager.vue';
-input: ['resources/css/app.css', 'resources/js/app.js']
+import TaskManager from '../../components/TaskManager.vue';
 import axios from 'axios';
-import Echo from 'laravel-echo';
 
 window.axios = axios;
 
-const app = createApp(TaskManager);
-app.mount('#app');
-
-
-
-window.Echo = new Echo({
-    broadcaster: 'reverb',
-    host: window.location.hostname + ':8080'
+axios.defaults.withCredentials = true;
+axios.defaults.withXRequestedWith = 'XMLHttpRequest';
+axios.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
 });
+
+// Register the component globally
+const app = createApp({});
+app.component('task-manager', TaskManager);
+app.mount('#app');

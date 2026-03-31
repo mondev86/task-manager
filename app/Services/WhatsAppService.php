@@ -30,8 +30,8 @@ class WhatsAppService
      */
     public static function generateReminderMessage($task)
     {
-        $startTime = $task->start_time->format('H:i');
-        $endTime = $task->end_time->format('H:i');
+        $startTime = $task->start_time ? $task->start_time->format('H:i') : 'No definida';
+        $endTime = $task->end_time ? $task->end_time->format('H:i') : 'No definida';
 
         $message = "🔔 *Recordatorio de Tarea*\n\n";
         $message .= "📝 *Tarea:* {$task->title}\n";

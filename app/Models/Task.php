@@ -10,11 +10,14 @@ class Task extends Model
         'title',
         'description',
         'completed',
+        'status',
+        'priority',
         'start_time',
         'end_time',
         'whatsapp_number',
+        'whatsapp_url',
         'notification_sent',
-        'email' 
+        'email'
     ];
 
     protected $casts = [

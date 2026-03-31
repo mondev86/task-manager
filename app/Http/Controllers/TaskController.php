@@ -7,12 +7,43 @@ use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use App\Mail\TaskReminderMail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Task::orderBy('created_at', 'desc')->get();
+        $query = Task::query();
+
+        // Filtro por estado (pending, in_progress, o completed)
+        if ($request->has('status') && $request->status) {
+            $status = $request->status;
+            if (in_array($status, ['pending', 'in_progress', 'completed'])) {
+                $query->where('status', $status);
+            }
+        }
+
+        // Filtro por fecha de inicio (start_time)
+        if ($request->has('start_date')) {
+            $query->whereDate('start_time', '>=', $request->start_date);
+        }
+
+        if ($request->has('end_date')) {
+            $query->whereDate('start_time', '<=', $request->end_date);
+        }
+
+        // Filtro por fecha específica (igual a)
+        if ($request->has('date')) {
+            $query->whereDate('start_time', $request->date);
+        }
+
+        // Paginación
+        $perPage = $request->input('per_page', 10); // Default 10 por página
+        $perPage = min($perPage, 100); // Máximo 100
+
+        $tasks = $query->orderBy('created_at', 'desc')->paginate($perPage);
+
+        return response()->json($tasks);
     }
 
     public function store(Request $request)
@@ -20,24 +51,25 @@ class TaskController extends Controller
         $validated = $request->validate([
             'title' => 'required|max:255',
             'description' => 'nullable',
+            'status' => 'nullable|in:pending,in_progress,completed',
+            'priority' => 'nullable|in:low,medium,high',
             'start_time' => 'nullable|date',
             'end_time' => 'nullable|date|after:start_time',
             'whatsapp_number' => 'nullable|string',
             'email' => 'nullable|email',
         ]);
 
-        $task = Task::create($validated);
-
-        // Si tiene WhatsApp y horario, generar URL de notificación
-        if ($task->whatsapp_number && $task->start_time) {
-            $message = WhatsAppService::generateReminderMessage($task);
-            $whatsappUrl = WhatsAppService::generateWhatsAppUrl(
-                $task->whatsapp_number,
-                $message
-            );
-
-            $task->whatsapp_url = $whatsappUrl;
+        // Default status a pending si no se especifica
+        if (!isset($validated['status'])) {
+            $validated['status'] = 'pending';
         }
+        
+        // Default priority a low si no se especifica
+        if (!isset($validated['priority'])) {
+            $validated['priority'] = 'low';
+        }
+
+        $task = Task::create($validated);
 
         return response()->json($task, 201);
     }
@@ -48,6 +80,8 @@ class TaskController extends Controller
             'title' => 'sometimes|required|max:255',
             'description' => 'nullable',
             'completed' => 'boolean',
+            'status' => 'nullable|in:pending,in_progress,completed',
+            'priority' => 'nullable|in:low,medium,high',
             'start_time' => 'nullable|date',
             'end_time' => 'nullable|date|after:start_time',
             'whatsapp_number' => 'nullable|string',
@@ -83,8 +117,7 @@ class TaskController extends Controller
     }
 
     /**
-     * ✅ MODIFICADO: WhatsApp estándar (abre WhatsApp Web con mensaje prellenado)
-     * Ya no usa CallMeBot - el usuario debe dar click en enviar manualmente
+     * WhatsApp: abre WhatsApp Web con mensaje prellenado
      */
     public function sendReminder(Task $task)
     {
@@ -106,28 +139,41 @@ class TaskController extends Controller
         return response()->json([
             'success' => true,
             'whatsapp_url' => $whatsappUrl,
-            'message' => '✅ Abre WhatsApp para enviar el recordatorio'
+            'message' => 'Abre WhatsApp para enviar el recordatorio'
         ]);
     }
 
     /**
-     * ✅ MODIFICADO: Enviar correo a cualquier dirección
-     * Ahora acepta email en el request, no solo usa el de la tarea
+     * Enviar correo a cualquier dirección
      */
     public function sendEmailReminder(Request $request, Task $task)
     {
-        // Validar que venga un email (puede ser diferente al de la tarea)
+        // Validar que venga un email
         $validated = $request->validate([
             'email' => 'required|email'
         ]);
 
         try {
+            $user = $request->user();
+
             // Enviar al email proporcionado
             Mail::to($validated['email'])->send(new TaskReminderMail($task));
 
+            // Registrar quién envió el email
+            Log::info('Email enviado', [
+                'usuario_id' => $user->id,
+                'usuario_nombre' => $user->name,
+                'usuario_email' => $user->email,
+                'email_destino' => $validated['email'],
+                'tarea_id' => $task->id,
+                'tarea_titulo' => $task->title,
+                'fecha' => now()->toDateTimeString(),
+                'ip' => $request->ip(),
+            ]);
+
             return response()->json([
                 'success' => true,
-                'message' => '📧 Recordatorio enviado a ' . $validated['email']
+                'message' => 'Recordatorio enviado a ' . $validated['email']
             ]);
         } catch (\Exception $e) {
             return response()->json([

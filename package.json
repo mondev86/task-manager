@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
     "$schema": "https://json.schemastore.org/package.json",
     "private": true,
     "type": "module",
@@ -9,6 +8,7 @@
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
+        "@vitejs/plugin-vue": "^6.0.4",
         "axios": "^1.13.2",
         "concurrently": "^9.0.1",
         "laravel-vite-plugin": "^2.0.0",
@@ -20,18 +20,4 @@
         "pusher-js": "^8.4.0",
         "vue": "^3.5.24"
     }
-=======
-  "dependencies": {
-    "axios": "^1.13.2",
-    "vite": "^7.2.2",
-    "vue": "^3.5.24"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.1"
-  },
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build"
-  }
->>>>>>> 51a4b52 (Cambios en mails, wsp y el front.)
 }
