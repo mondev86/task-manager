@@ -1,6 +1,6 @@
 import './bootstrap';
 import { createApp } from 'vue';
-import TaskManager from '../../components/TaskManager.vue';
+import TaskManager from './components/TaskManager.vue';
 import axios from 'axios';
 
 window.axios = axios;
