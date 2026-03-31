@@ -1,78 +1,113 @@
 # Task Manager
 
-Aplicación de gestión de tareas desarrollada con Laravel 12, Vue 3, MySQL y mas.
+Aplicación web de gestión de tareas desarrollada con **Laravel 12**, **Vue 3**, **Tailwind CSS 4** y **MySQL 8**. Incluye autenticación, estados, prioridades, filtros, paginación y recordatorios por WhatsApp y email.
 
-## Desc Manager es una aplicación web para gestionar tareasripción
-
-Task diarias con las siguientes funcionalidades:
-
-- **Gestión de tareas**: Crear, editar, completar y eliminar tareas
-- **Estados**: Cada tarea puede estar Pendiente, En proceso o Completada
-- **Prioridades**: Alta (rojo), Media (naranja), Baja (gris) para organizar visualmente
-- **Fechas**: Programar tareas con fecha y hora de inicio
-- **Recordatorios**: Enviar recordatorios por WhatsApp o email
-- **Diseño moderno**: Interfaz visual con franjas de color según prioridad/estado
-
-Ideal para uso personal o pequeño equipo.
+Ideal para uso personal o en equipo pequeño. Funciona con **Laravel Herd**, **XAMPP** o **Docker**.
 
 ---
 
 ## Características
 
-- ✅ **Autenticación** - Registro e inicio de sesión con Laravel Sanctum
-- ✅ **CRUD de tareas** - Crear, leer, actualizar y eliminar tareas
-- ✅ **Estados** - Pendiente, En proceso, Completada
-- ✅ **Prioridades** - Alta (rojo), Media (naranja), Baja (gris)
-- ✅ **Diseño visual** - Franja de color según prioridad/tarea completada
-- ✅ **Filtros** - Filtrar por estado, fecha y paginación
-- ✅ **Recordatorios WhatsApp** - Enviar recordatorios via WhatsApp Web
-- ✅ **Email** - Enviar recordatorios por correo (mailto)
-- ✅ **Seguridad** - Rate limiting, sesiones cifradas, debug off
-
-## Requisitos
-
-### Local (XAMPP)
-- PHP 8.2+
-- Composer
-- Node.js 18+
-- MySQL 8.0+
-- XAMPP
-
-### Docker
-- Docker + Docker Compose
+- ✅ **Autenticación** — Registro e inicio de sesión con Laravel Sanctum (token Bearer)
+- ✅ **CRUD completo** — Crear, leer, actualizar y eliminar tareas
+- ✅ **Estados** — Pendiente, En proceso, Completada
+- ✅ **Prioridades** — Alta (rojo), Media (naranja), Baja (gris) con franja visual de color
+- ✅ **Fechas** — Programar fecha/hora de inicio y fin por tarea
+- ✅ **Filtros y paginación** — Filtrar por estado, rango de fechas y número de resultados por página
+- ✅ **Recordatorio WhatsApp** — Abre WhatsApp Web con mensaje prellenado
+- ✅ **Recordatorio Email** — Envío de correo con plantilla HTML via Mailtrap
+- ✅ **Seguridad** — Rate limiting, sesiones cifradas, `APP_DEBUG=false` por defecto, logs de auditoría en envíos
 
 ---
 
-## Instalación Local
+## Tecnologías
+
+| Capa | Tecnología |
+|------|-----------|
+| Backend | Laravel 12, PHP 8.2 |
+| Frontend | Vue 3, Tailwind CSS 4, Vite |
+| Base de datos | MySQL 8.0 |
+| Autenticación | Laravel Sanctum |
+| Email | Mailtrap (desarrollo) |
+| Contenedores | Docker + Docker Compose |
+
+---
+
+## Requisitos
+
+| Entorno | Requisitos |
+|---------|-----------|
+| **Herd** | Laravel Herd, Node.js 18+, MySQL 8 |
+| **XAMPP** | PHP 8.2+, Composer, Node.js 18+, MySQL 8, XAMPP |
+| **Docker** | Docker Desktop + Docker Compose |
+
+---
+
+## Instalación
+
+### Pasos comunes (Herd, XAMPP o servidor propio)
 
 ```bash
-# Clonar el proyecto
-git clone <repo-url>
+# 1. Clonar el proyecto
+git clone https://github.com/mondev86/task-manager.git
 cd task-manager
 
-# Instalar dependencias PHP
+# 2. Instalar dependencias PHP
 composer install
 
-# Instalar dependencias Node
+# 3. Instalar dependencias Node
 npm install
 
-# Copiar archivo de entorno
-cp .env.example .env
+# 4. Copiar archivo de entorno
+cp .env.example .env     # Linux/Mac
+copy .env.example .env   # Windows
 
-# Generar clave de aplicación
+# 5. Generar clave de aplicación
 php artisan key:generate
 
-# Ejecutar migraciones
+# 6. Ejecutar migraciones
 php artisan migrate
 
-# Compilar assets
+# 7. Compilar assets
 npm run build
-
-# Iniciar servidor
-php artisan serve
 ```
 
-## Configuración .env (Local)
+---
+
+### Opción A — Laravel Herd (recomendado en Windows/Mac)
+
+1. Instala [Laravel Herd](https://herd.laravel.com) y asegúrate de tener PHP 8.2 y MySQL activos.
+2. Coloca el proyecto dentro de la carpeta de sitios de Herd (por defecto `~/Herd`).
+3. Crea la base de datos `taskmanagerdb` en el MySQL de Herd.
+4. Configura `.env`:
+
+```env
+APP_NAME=TaskManager
+APP_ENV=local
+APP_DEBUG=false
+APP_URL=http://task-manager.test
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=taskmanagerdb
+DB_USERNAME=root
+DB_PASSWORD=tu_password
+
+SESSION_ENCRYPT=true
+SESSION_DRIVER=database
+QUEUE_CONNECTION=sync
+```
+
+5. Accede a `http://task-manager.test`
+
+---
+
+### Opción B — XAMPP
+
+1. Inicia Apache y MySQL desde el panel de XAMPP.
+2. Crea la base de datos `taskmanagerdb` en `http://localhost/phpmyadmin`.
+3. Configura `.env`:
 
 ```env
 APP_NAME=TaskManager
@@ -85,27 +120,34 @@ DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=taskmanagerdb
 DB_USERNAME=root
-DB_PASSWORD=tu_password
+DB_PASSWORD=
 
 SESSION_ENCRYPT=true
 SESSION_DRIVER=database
+QUEUE_CONNECTION=sync
 ```
+
+4. Levanta el servidor:
+
+```bash
+php artisan serve
+```
+
+5. Accede a `http://127.0.0.1:8000`
 
 ---
 
-## Docker (WSL/Linux)
+### Opción C — Docker (WSL/Linux/Windows)
 
-### Archivos配置
-- `Dockerfile` - Imagen PHP 8.2-FPM
-- `docker-compose.yml` - Servicios app + MySQL
-- `Makefile` - Comandos rápidos
-
-### Comandos
+El proyecto incluye `Dockerfile`, `docker-compose.yml` y `Makefile`.
 
 ```bash
-# Construir y ejecutar
+# Construir y levantar contenedores
 make build
 make up
+
+# Ejecutar migraciones dentro del contenedor
+make migrate
 
 # Ver logs en tiempo real
 make logs
@@ -113,14 +155,11 @@ make logs
 # Entrar al contenedor
 make sh
 
-# Ejecutar migraciones
-make migrate
-
-# Reiniciar base de datos
+# Reiniciar base de datos con seeders
 make fresh
 ```
 
-### Configuración .env (Docker)
+Configuración `.env` para Docker:
 
 ```env
 APP_NAME=TaskManager
@@ -137,103 +176,66 @@ DB_PASSWORD=root
 
 SESSION_ENCRYPT=true
 SESSION_DRIVER=database
+QUEUE_CONNECTION=sync
 ```
 
-### Puertos
+| Servicio | Puerto local |
+|----------|-------------|
+| Aplicación | 8000 |
+| MySQL | 3308 |
 
-| Servicio | Puerto |
-|----------|--------|
-| App | 8000 |
-| MySQL | 3306 |
+Accede a `http://localhost:8000`
 
 ---
 
-## Uso
+## Uso de la aplicación
 
-1. Acceder a `http://127.0.0.1:8000`
-2. Registrarse / Iniciar sesión
-3. Crear tareas con título, descripción, estado, prioridad, fecha y WhatsApp
-4. Editar o eliminar tareas desde los iconos
-5. Enviar recordatorios por WhatsApp o email
+1. Registrarse o iniciar sesión.
+2. Crear una tarea con título, descripción, estado, prioridad, fecha de inicio y número de WhatsApp.
+3. Editar o eliminar tareas desde los iconos de cada tarjeta.
+4. Filtrar por estado y rango de fechas; paginar resultados.
+5. Enviar recordatorio por WhatsApp (abre WhatsApp Web con mensaje prellenado).
+6. Enviar recordatorio por email directamente desde la tarjeta.
 
 ---
 
 ## API Endpoints
+
+Todos los endpoints (excepto login/register) requieren header `Authorization: Bearer {token}`.
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
 | POST | `/api/register` | Registrar usuario |
 | POST | `/api/login` | Iniciar sesión |
 | POST | `/api/logout` | Cerrar sesión |
-| GET | `/api/tasks` | Listar tareas (con filtros) |
+| GET | `/api/tasks` | Listar tareas (con filtros y paginación) |
 | POST | `/api/tasks` | Crear tarea |
 | PUT | `/api/tasks/{id}` | Actualizar tarea |
 | DELETE | `/api/tasks/{id}` | Eliminar tarea |
-| POST | `/api/tasks/{id}/whatsapp` | Enviar recordatorio WhatsApp |
-| POST | `/api/tasks/{id}/email` | Enviar recordatorio email |
+| POST | `/api/tasks/{id}/whatsapp` | Generar URL de recordatorio WhatsApp |
+| POST | `/api/tasks/{id}/email` | Enviar recordatorio por email |
 
-### Filtros GET `/api/tasks`
+### Parámetros de filtrado — `GET /api/tasks`
 
-- `?status=pending|in_progress|completed` - Filtrar por estado
-- `?start_date=2026-01-01` - Filtrar desde fecha
-- `?end_date=2026-12-31` - Filtrar hasta fecha
-- `?per_page=20` - Tareas por página (máx 100)
-
----
-
-## Errores Comunes
-
-### Error: "SQLSTATE[42S22]: Column not found"
-- **Causa**: La columna `status` o `priority` no existe en la base de datos
-- **Solución**: Ejecutar migraciones
-  ```bash
-  php artisan migrate
-  ```
-
-### Error: "Route not found" o 404
-- **Causa**: Rutas no regeneradas
-- **Solución**: 
-  ```bash
-  php artisan route:clear
-  php artisan cache:clear
-  ```
-
-### Error: "Target class [XXX] does not exist"
-- **Causa**: Cache de Laravel obsoleto
-- **Solución**:
-  ```bash
-  php artisan config:clear
-  php artisan cache:clear
-  ```
-
-### Error: "Pusher client not found"
-- **Causa**: Echo/Pusher no configurado (solo si usas tiempo real)
-- **Solución**: No afecta el funcionamiento, eliminar configuración de websockets si no se usa
-
-### Error: "Connection refused" en Docker
-- **Causa**: MySQL no está iniciado o credenciales incorrectas
-- **Solución**: Verificar `docker-compose up -d` y credenciales en `.env`
-
-### Error: "Vite manifest not found"
-- **Causa**: Assets no compilados
-- **Solución**:
-  ```bash
-  npm run build
-  ```
-
-### Error: "Session encrypted"
-- **Causa**: Intento de acceder a sesión sin HTTPS en producción
-- **Solución**: Configurar correctamente `SESSION_ENCRYPT` y `SANCTUM_STATEFUL_DOMAINS`
+| Parámetro | Valores | Descripción |
+|-----------|---------|-------------|
+| `status` | `pending`, `in_progress`, `completed` | Filtrar por estado |
+| `start_date` | `YYYY-MM-DD` | Tareas desde esta fecha |
+| `end_date` | `YYYY-MM-DD` | Tareas hasta esta fecha |
+| `per_page` | número (máx 100) | Resultados por página |
 
 ---
 
-## Tecnologías
+## Errores comunes
 
-- **Backend**: Laravel 12, PHP 8.2
-- **Frontend**: Vue 3, Tailwind CSS 4, Vite
-- **Base de datos**: MySQL 8.0
-- **Autenticación**: Laravel Sanctum
-- **Email**: Mailtrap (desarrollo)
+| Error | Causa | Solución |
+|-------|-------|---------|
+| `SQLSTATE[42S22]: Column not found` | Faltan columnas `status` o `priority` | `php artisan migrate` |
+| `404` o ruta no encontrada | Cache de rutas obsoleto | `php artisan route:clear` |
+| `Target class does not exist` | Cache de Laravel desactualizado | `php artisan config:clear && php artisan cache:clear` |
+| `Vite manifest not found` | Assets sin compilar | `npm run build` |
+| `Connection refused` (Docker) | MySQL no levantado | `make up` y verificar `.env` |
+| `Unauthenticated` en API | Token no enviado o expirado | Incluir `Authorization: Bearer {token}` |
 
 ---
 
