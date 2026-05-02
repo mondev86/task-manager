@@ -8,7 +8,7 @@ Ideal para uso personal o en equipo pequeño. Funciona con **Laravel Herd**, **X
 
 ## Características
 
-- ✅ **Autenticación** — Registro e inicio de sesión con Laravel Sanctum (token Bearer)
+- ✅ **Autenticación** — Registro e inicio de sesión con Laravel Sanctum (token Bearer, [ver detalles](#autenticación))
 - ✅ **CRUD completo** — Crear, leer, actualizar y eliminar tareas
 - ✅ **Estados** — Pendiente, En proceso, Completada
 - ✅ **Prioridades** — Alta (rojo), Media (naranja), Baja (gris) con franja visual de color
@@ -30,8 +30,19 @@ Ideal para uso personal o en equipo pequeño. Funciona con **Laravel Herd**, **X
 | Autenticación | Laravel Sanctum |
 | Email | Mailtrap (desarrollo) |
 | Contenedores | Docker + Docker Compose |
+---
+
+## Autenticación
+
+La API utiliza **Laravel Sanctum** con dos modos disponibles:
+- **SPA Mode**: Basado en cookies, protección CSRF, diseñado para SPAs de primera parte (mismo dominio).
+- **Token Authentication**: Basado en Bearer tokens, diseñado para terceros o aplicaciones móviles.
+
+### Elección del proyecto
+Se eligió **Token Authentication (Bearer)** para este proyecto porque el frontend Vue 3 consume la API de forma independiente, permitiendo flexibilidad para futuras integraciones. La autenticación requiere el header `Authorization: Bearer {token}` en todos los endpoints protegidos.
 
 ---
+
 
 ## Requisitos
 
@@ -236,6 +247,26 @@ Todos los endpoints (excepto login/register) requieren header `Authorization: Be
 | `Vite manifest not found` | Assets sin compilar | `npm run build` |
 | `Connection refused` (Docker) | MySQL no levantado | `make up` y verificar `.env` |
 | `Unauthenticated` en API | Token no enviado o expirado | Incluir `Authorization: Bearer {token}` |
+
+---
+
+## Versiones
+
+- **Task Manager** (este repositorio): Con funcionalidades core. Se mantendrá como versión de uso para usuario individual.
+- **Task Manager Advanced**: Es un proyecto con funcionalidades avanzadas para equipos de usuarios. [Repositorio](https://github.com/mondev86/task-manager-advanced).
+
+---
+
+## Pruebas
+
+El proyecto incluye pruebas funcionales (Feature Tests) básicas con PHPUnit:
+1. Test de login: Valida credenciales válidas (éxito) e inválidas (error 401).
+2. Test de creación de tareas: Valida que usuarios autenticados puedan crear tareas, no autenticados no.
+
+Para ejecutar las pruebas:
+```bash
+php artisan test
+```
 
 ---
 
